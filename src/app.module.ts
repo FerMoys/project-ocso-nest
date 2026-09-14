@@ -1,21 +1,35 @@
 import { Module } from '@nestjs/common';
-import { createObserveModule } from '@nestjs/observe';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { EmployeesModule } from './employees/employees.module.js';
-
-export const { ObserveModule, ObserveInstrument } = createObserveModule();
+import { ProductsModule } from './products/products.module.js';
 
 @Module({
   imports: [
-    // Distributed tracing, auto-correlated logs, request/job metrics, error
-    // telemetry, alarms, and more — out of the box. Sign up at https://observe.nestjs.com
-    /*ObserveModule.forRoot({
-      appKey: 'YOUR_APP_KEY',
-      appSecret: 'YOUR_APP_SECRET',
-      serviceId: 'ocso-project',
-    }),*/
+    // 1. Cargar las variables del archivo .env a nivel global
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+
+    // 2. Configurar TypeORM mediante forRootAsync
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('host') ?? 'localhost',
+        port: configService.get<number>('port') ?? 5432,
+        username: 'postgres',
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_NAME'),
+        entities: [],
+        synchronize: true,
+      }),
+    }),
     EmployeesModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
