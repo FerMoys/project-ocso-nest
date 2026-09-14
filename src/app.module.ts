@@ -6,6 +6,7 @@ import { AppService } from './app.service.js';
 import { EmployeesModule } from './employees/employees.module.js';
 import { ProductsModule } from './products/products.module.js';
 import { Product } from './products/entities/product.entity.js';
+import { Employee } from './employees/entities/employee.entity.js';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { Product } from './products/entities/product.entity.js';
         username: 'postgres',
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Product],
+        entities: [Product, Employee],
         synchronize: true,
       }),
     }),
