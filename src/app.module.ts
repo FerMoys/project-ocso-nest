@@ -7,6 +7,7 @@ import { EmployeesModule } from './employees/employees.module.js';
 import { ProductsModule } from './products/products.module.js';
 import { Product } from './products/entities/product.entity.js';
 import { Employee } from './employees/entities/employee.entity.js';
+import { ProvidersModule } from './providers/providers.module.js';
 
 @Module({
   imports: [
@@ -26,12 +27,13 @@ import { Employee } from './employees/entities/employee.entity.js';
         username: 'postgres',
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Product, Employee],
+        autoLoadEntities: true,
         synchronize: true,
       }),
     }),
     EmployeesModule,
     ProductsModule,
+    ProvidersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

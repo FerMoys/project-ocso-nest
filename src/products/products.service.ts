@@ -18,7 +18,12 @@ export class ProductsService {
   }
 
   async findAll() {
-    return await this.productRepository.find();
+    return await this.productRepository.find({
+      loadEagerRelations: true,
+      relations: {
+        provider:true,
+      }
+    });
   }
 
   async findOne(id: string) {
@@ -31,7 +36,7 @@ export class ProductsService {
 
   async findByProvider(providerId: string) {
     const providerProducts = await this.productRepository.findBy({
-      provider: providerId,
+      provider: { providerId: providerId }
     });
     if (providerProducts.length === 0) {
       throw new NotFoundException(
@@ -44,7 +49,7 @@ export class ProductsService {
   async update(id: string, updateProductDto: UpdateProductDto) {
     const product = await this.productRepository.preload({
       productId: id,
-      ...updateProductDto,
+      ...updateProductDto
     });
 
     if (!product) {
@@ -56,9 +61,7 @@ export class ProductsService {
 
   async remove(id: string) {
     const product = await this.findOne(id);
-    
     await this.productRepository.remove(product);
-
     return { message: `Product with id ${id} was deleted successfully` };
   }
 }
