@@ -1,6 +1,16 @@
+import { IsString, IsOptional } from 'class-validator';
+
 export class CreateEmployeeDto {
-    id: string;
-    name: string;
-    lastName: string;
-    phoneNumber: string;
+  @IsString()
+  name: string;
+
+  @IsString()
+  lastName: string;
+
+  @IsString()
+  phoneNumber: string;
+
+  @IsString()
+  @IsOptional()
+  photoUrl?: string;
 }
