@@ -34,7 +34,7 @@ export class ProductsService {
     return product;
   }
 
-  async findByProvider(providerId: string) {
+  async findByProvider(id: string) {/*
     const providerProducts = await this.productRepository.findBy({
       provider: { providerId: providerId }
     });
@@ -43,7 +43,12 @@ export class ProductsService {
         `No products found for provider ${providerId}`,
       );
     }
-    return providerProducts;
+    return providerProducts;*/
+    return this.productRepository.findBy({
+      provider: {
+        providerId: id,
+      }
+    })
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {

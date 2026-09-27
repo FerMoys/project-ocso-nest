@@ -10,8 +10,6 @@ export class Product {
         price: number;
     @Column({type:"int"})
         countSeal: number;
-       // @PrimaryGeneratedColumn("uuid")
-        //provider: string;
     @ManyToOne(()=> Provider, (provider)=> provider.products, {
         eager:true,
     })
