@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { LocationsService } from './locations.service.js';
 import { LocationsController } from './locations.controller.js';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([Location])],
   controllers: [LocationsController],
   providers: [LocationsService],
 })
