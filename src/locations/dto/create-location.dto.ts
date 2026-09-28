@@ -1,6 +1,6 @@
 import { IsString, MaxLength, IsArray, ArrayNotEmpty } from "class-validator";
 
-export class CreateLocationDto extends Location {
+export class CreateLocationDto {
     @IsString()
     @MaxLength(35)
     locationName:string;

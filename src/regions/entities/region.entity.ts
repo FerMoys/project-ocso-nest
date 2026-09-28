@@ -1,5 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Location } from "../../locations/entities/location.entity.js";
 @Entity()
 export class Region {
     @PrimaryGeneratedColumn('increment')
@@ -9,6 +9,11 @@ export class Region {
         unique: true
     })
     regionName: string;
-    @Column('array')
+    @Column('simple-array')
     regionsStates: string[]
+
+
+    @OneToMany(()=> Location, (location) => location.region)
+    location: Location[];
 }
+

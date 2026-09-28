@@ -1,15 +1,24 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
+import type { Location } from "../../locations/entities/location.entity.js";
 
 @Entity()
 export class Manager {
     @PrimaryGeneratedColumn('uuid')
-    managerId:string;
+    managerId: string;
+
     @Column('text')
-    managerFullName:string;
+    managerFullName: string;
+
     @Column('float')
-    managerSalary:number;
+    managerSalary: number;
+
     @Column('text')
-    managerEmail:string;
+    managerEmail: string;
+
     @Column('text')
-    managerPhoneNumber:string
+    managerPhoneNumber: string;
+
+    // Pasa el nombre de la entidad directamente como string
+    @OneToOne('Location', (location: Location) => location.manager)
+    location: Location;
 }
