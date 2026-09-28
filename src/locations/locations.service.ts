@@ -3,10 +3,12 @@ import { CreateLocationDto } from './dto/create-location.dto.js';
 import { UpdateLocationDto } from './dto/update-location.dto.js';
 import { Repository } from 'typeorm';
 import { Location } from './entities/location.entity.js';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class LocationsService {
   constructor(
+    @InjectRepository(Location)
     private locationRepository: Repository<Location>
   ){}
   create(createLocationDto: CreateLocationDto) {
