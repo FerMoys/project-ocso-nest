@@ -18,7 +18,7 @@ export class ProvidersController {
   @UseGuards(AuthGuard)
   @Get()
   findAll(@UserData() user:User) {
-    if(!user.userRoles) throw new UnauthorizedException("No estás autorizado, sólo administradores")
+    if(user.userRoles.includes("Employee")) throw new UnauthorizedException("No estás autorizado, sólo managers")
     return this.providersService.findAll();
   }
   @Get('/name/:name')
