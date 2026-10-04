@@ -7,6 +7,7 @@ import { UserData } from '../auth/decorators/user.decorator.js';
 import { User } from '../auth/entities/user.entity.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
 import { RolesGuard } from '../auth/guards/roles.guard.js';
+import { Auth } from '../auth/decorators/auth.decorator.js';
 
 @Controller('providers')
 export class ProvidersController {
@@ -16,9 +17,7 @@ export class ProvidersController {
   create(@Body() createProviderDto: CreateProviderDto) {
     return this.providersService.create(createProviderDto);
   }
-
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(["Admin"])
+  @Auth("Admin")
   @Get()
   findAll(@UserData() user:User) {
     if(user.userRoles.includes("Employee")) throw new UnauthorizedException("No estás autorizado, sólo managers")
