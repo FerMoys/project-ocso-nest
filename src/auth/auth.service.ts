@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -32,10 +32,10 @@ export class AuthService {
     const match = await bcrypt.compare(loginUser.userPassword, user.userPassword);
     if(!match) throw new UnauthorizedException("No estás autorizado");
 
-
+    // CORREGIDO: Payload limpio sin contraseña, usando userId (o el identificador de tu entidad)
     const payload = { 
+      id: user.userId,
       userEmail: user.userEmail,
-      userPassword: user.userPassword,
       userRoles: user.userRoles
     };
 
@@ -45,5 +45,27 @@ export class AuthService {
       user: payload,
       token
     };
+  }
+
+  async updateUserData(userEmail: string, updateUserDto: UpdateUserDto){
+    const user = await this.userRepository.findOne({ where: { userEmail } });
+    if (!user) throw new NotFoundException("Usuario no encontrado");
+
+    const newUserData = await this.userRepository.preload({
+      userId: user.userId,
+      ...updateUserDto
+    });
+
+    // Validamos si es undefined para satisfacer a TypeScript
+    if (!newUserData) {
+      throw new NotFoundException("No se pudieron cargar los datos para actualizar");
+    }
+
+    if (updateUserDto.userPassword) {
+      newUserData.userPassword = bcrypt.hashSync(updateUserDto.userPassword, 5);
+    }
+
+    await this.userRepository.save(newUserData);
+    return newUserData;
   }
 }
