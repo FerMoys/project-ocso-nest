@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { ProvidersService } from './providers.service.js';
 import { CreateProviderDto } from './dto/create-provider.dto.js';
 import { UpdateProviderDto } from './dto/update-provider.dto.js';
+import { AuthGuard } from '../auth/guards/auth.guard.js';
+import { UserData } from '../auth/decorators/user.decorator.js';
+import { User } from '../auth/entities/user.entity.js';
 
 @Controller('providers')
 export class ProvidersController {
@@ -12,8 +15,10 @@ export class ProvidersController {
     return this.providersService.create(createProviderDto);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
-  findAll() {
+  findAll(@UserData() user:User) {
+    if(!user.userRoles) throw new UnauthorizedException("No estás autorizado, sólo administradores")
     return this.providersService.findAll();
   }
   @Get('/name/:name')

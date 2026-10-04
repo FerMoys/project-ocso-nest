@@ -12,16 +12,18 @@ import { ManagersModule } from './managers/managers.module.js';
 import { LocationsModule } from './locations/locations.module.js';
 import { RegionsModule } from './regions/regions.module.js';
 import { AuthModule } from './auth/auth.module.js';
+import { JwtModule } from '@nestjs/jwt';
+import { JWT_KEY } from './auth/constants/jwt.constants.js';
+import { EXPIRES_IN } from './auth/constants/jwt.constants.js';
 
 @Module({
   imports: [
-    // 1. Cargar las variables del archivo .env a nivel global
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
-    // 2. Configurar TypeORM mediante forRootAsync
     TypeOrmModule.forRootAsync({
+      
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
