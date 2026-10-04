@@ -1,15 +1,31 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import type { Manager } from "../../managers/entities/manager.entity.js";
+import type { Employee } from "../../employees/entities/employee.entity.js";
 
 @Entity()
-export class User{
+export class User {
     @PrimaryGeneratedColumn('uuid')
-    userId:string;
+    userId: string;
+
     @Column('text')
-    userEmail:string;
+    userEmail: string;
+
     @Column('text')
-    userPassword:string;
+    userPassword: string;
+
     @Column('simple-array', {
         default: "Employee"
     })
     userRoles: string[];
+
+    
+    @OneToOne('Manager', {
+        eager: true
+    })
+    manager: Manager;
+
+    @OneToOne('Employee', {
+        eager: true
+    })
+    employee: Employee;
 }

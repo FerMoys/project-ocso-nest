@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
 import type { Location } from "../../locations/entities/location.entity.js";
+import type { User } from "../../auth/entities/user.entity.js"; 
 
 @Entity()
 export class Manager {
@@ -18,7 +19,12 @@ export class Manager {
     @Column('text')
     managerPhoneNumber: string;
 
-    // Pasa el nombre de la entidad directamente como string
     @OneToOne('Location', (location: Location) => location.manager)
     location: Location;
+
+    @OneToOne('User', (user: User) => user.manager, { onDelete: 'CASCADE' }) // Opcional: onDelete según tus reglas de negocio
+    @JoinColumn({
+        name: "userId"
+    })
+    user: User;
 }

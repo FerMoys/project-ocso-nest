@@ -4,7 +4,10 @@ import { RolesGuard } from "../guards/roles.guard.js";
 import { Roles } from "./roles.decorator.js";
 
 
-export const Auth = (...roles: string[]) => applyDecorators(
+export const Auth = (...roles: string[]) => {
+    roles.push("Admin")
+    return applyDecorators(
     Roles(roles),
     UseGuards(AuthGuard, RolesGuard)
-)
+    )
+}
