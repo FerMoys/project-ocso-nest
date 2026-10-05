@@ -11,34 +11,39 @@ export class ManagersService {
     @InjectRepository(Manager)
     private managerRepository: Repository<Manager>
   ){}
-  create(createManagerDto: CreateManagerDto) {
-    return this.managerRepository.save(createManagerDto);
+
+ create(createManagerDto: CreateManagerDto) {
+    const manager = this.managerRepository.create(createManagerDto as any);
+    return this.managerRepository.save(manager);
   }
 
   findAll() {
-    return this.managerRepository.find()
+    return this.managerRepository.find();
   }
 
-  findOne(id: string) {
-    const manager = this.managerRepository.findOneBy({
+  async findOne(id: string) {
+    
+    const manager = await this.managerRepository.findOneBy({
       managerId: id
-    })
-    if(!manager) throw new NotFoundException()
-    return manager
+    });
+    
+    if (!manager) throw new NotFoundException(`Manager with ID ${id} not found`);
+    return manager;
   }
 
   async update(id: string, updateManagerDto: UpdateManagerDto) {
     const managerToUpdate = await this.managerRepository.preload({
       managerId: id,
-      ...updateManagerDto
-    })
-    if(!managerToUpdate) throw new NotFoundException()
-    return this.managerRepository.save(managerToUpdate)
+      ...updateManagerDto as any
+    } as any);
+    
+    if (!managerToUpdate) throw new NotFoundException(`Manager with ID ${id} not found`);
+    return this.managerRepository.save(managerToUpdate);
   }
 
-  remove(id: string) {
-    return this.managerRepository.delete({
-      managerId:id
-    })
+  async remove(id: string) {
+    const manager = await this.findOne(id);
+    await this.managerRepository.remove(manager);
+    return { message: `Manager with ID ${id} was deleted successfully` };
   }
 }

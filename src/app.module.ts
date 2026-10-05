@@ -45,7 +45,5 @@ import { EXPIRES_IN } from './auth/constants/jwt.constants.js';
     RegionsModule,
     AuthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

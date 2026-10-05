@@ -17,10 +17,9 @@ export class Location {
     @Column('simple-array')
     locationLatLng: number[];
 
-    // Pasa el nombre de la entidad directamente como string
     @OneToOne('Manager', (manager: Manager) => manager.location)
     @JoinColumn({
-        name: "managerId"
+        name: "managerId",
     })
     manager: Manager;
 
