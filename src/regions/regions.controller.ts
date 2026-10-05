@@ -6,8 +6,10 @@ import { Auth } from '../auth/decorators/auth.decorator.js';
 import { ROLES } from '.././auth/constants/roles.constants.js'
 import { Admin } from 'typeorm/driver/mongodb/typings.js';
 import { ApiAuth } from '../auth/decorators/api.decorator.js';
+import { ApiTags } from '@nestjs/swagger';
 
 @ApiAuth()
+@ApiTags('Regions')
 @Controller('regions')
 export class RegionsController {
   constructor(private readonly regionsService: RegionsService) {}

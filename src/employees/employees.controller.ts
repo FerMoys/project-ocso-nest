@@ -6,11 +6,12 @@ import { CreateEmployeeDto } from './dto/create-employee.dto.js';
 import { UpdateEmployeeDto } from './dto/update-employee.dto.js';
 import { Auth } from '../auth/decorators/auth.decorator.js';
 import { ROLES } from '../auth/constants/roles.constants.js';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Employee } from './entities/employee.entity.js';
 import {ApiAuth} from '../auth/decorators/api.decorator.js'
 
 @ApiAuth()
+@ApiTags('Employees')
 @Controller('employees')
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
