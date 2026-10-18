@@ -4,7 +4,11 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: process.env.allowedOrigin
+    }
+  });
 
   const config = new DocumentBuilder()
   .setTitle('Ocso API')
@@ -24,7 +28,7 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.APP_PORT ?? 3001;
+  const port = process.env.APP_PORT ?? 3003;
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}`);
 }
