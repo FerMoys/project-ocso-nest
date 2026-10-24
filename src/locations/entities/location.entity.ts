@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToMany, ManyToOne, OneToMany } from "typeorm";
-import type { Manager } from "../../managers/entities/manager.entity.js";
+import { Manager } from "../../managers/entities/manager.entity.js";
 import { Region } from "../../regions/entities/region.entity.js";
 import { Employee } from "../../employees/entities/employee.entity.js";
 import { ApiProperty } from "@nestjs/swagger";
@@ -28,11 +28,14 @@ export class Location {
     @Column('simple-array')
     locationLatLng: number[];
 
-    @OneToOne('Manager', (manager: Manager) => manager.location)
+    @ApiProperty({default:"1b143ad-5e6c-4ee3-806d-74406d65c714"})
+    @OneToOne(() => Manager,{
+        eager:true,
+    })
     @JoinColumn({
         name: "managerId",
     })
-    manager: Manager;
+    manager: Manager | string;
 
     @ManyToOne(()=> Region, (region) => region.location)
     @JoinColumn({

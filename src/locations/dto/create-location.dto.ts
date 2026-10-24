@@ -1,4 +1,4 @@
-import { IsString, MaxLength, IsArray, ArrayNotEmpty, IsObject, IsOptional } from "class-validator";
+import { IsString, MaxLength, IsArray, ArrayNotEmpty, IsObject, IsOptional, IsUUID } from "class-validator";
 import { Region } from "../../regions/entities/region.entity.js";
 
 export class CreateLocationDto {
@@ -14,5 +14,8 @@ export class CreateLocationDto {
     @IsObject()
     @IsOptional()
     region: Region
+    @IsUUID()
+    @IsOptional()
+    manager: string;
 
 }
