@@ -31,8 +31,11 @@ export class Manager {
     @Column('text')
     managerPhoneNumber: string;
 
-    @OneToOne('Location', (location: Location) => location.manager)
-    location: Location;
+    @OneToOne('Location', (location: Location) => location.manager,   { nullable: true },)
+     @JoinColumn({
+        name: "locationId"
+    })
+    location: Location | null;
 
     @OneToOne('User', (user: User) => user.manager, { onDelete: 'CASCADE' }) // Opcional: onDelete según tus reglas de negocio
     @JoinColumn({
