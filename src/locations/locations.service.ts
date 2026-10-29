@@ -23,7 +23,28 @@ export class LocationsService {
   ) {}
 
   async create(createLocationDto: CreateLocationDto) {
-    const location = this.locationRepository.create(createLocationDto);
+    const { manager: managerId, ...locationData } = createLocationDto;
+
+    const location = this.locationRepository.create(locationData);
+
+    if (managerId) {
+      const manager = await this.managerRepository.findOne({
+        where: { managerId },
+      });
+
+      if (!manager) {
+        throw new NotFoundException('Manager not found');
+      }
+
+      if (manager.location) {
+        throw new BadRequestException(
+          'This manager is already assigned to another location',
+        );
+      }
+
+      location.manager = manager;
+    }
+
     return await this.locationRepository.save(location);
   }
 
@@ -50,34 +71,47 @@ export class LocationsService {
     return location;
   }
 
+  
   async update(id: number, updateLocationDto: UpdateLocationDto) {
     const location = await this.findOne(id);
 
     const { manager: managerId, ...locationData } = updateLocationDto;
 
-    // Actualizar los datos de la ubicación.
+    // Actualizar los datos de la tienda.
     Object.assign(location, locationData);
+    await this.locationRepository.save(location);
 
-    // Si se especificó un gerente, actualizar la relación.
     if (managerId !== undefined) {
-      // Liberar la ubicación del gerente que la tenía anteriormente.
-      await this.managerRepository
-        .createQueryBuilder()
-        .update(Manager)
-        .set({ location: null })
-        .where('locationId = :id', { id })
-        .execute();
+      // Buscar al gerente actualmente asociado a esta tienda.
+      const previousManager = await this.managerRepository.findOne({
+        where: {
+          location: { locationId: id },
+        },
+        relations: {
+          location: true,
+        },
+      });
 
-      if (managerId !== null) {
+      // Si se envía null, solo se desasocia al gerente.
+      if (managerId === null) {
+        if (previousManager) {
+          previousManager.location = null;
+          await this.managerRepository.save(previousManager);
+        }
+      } else {
+        // Buscar al gerente solicitado.
         const manager = await this.managerRepository.findOne({
-          where: { managerId: managerId },
+          where: { managerId },
+          relations: {
+            location: true,
+          },
         });
 
         if (!manager) {
           throw new NotFoundException('Manager not found');
         }
 
-        // Evitar que un gerente quede asignado a otra ubicación.
+        // No permitir que el gerente pertenezca a otra tienda.
         if (
           manager.location &&
           manager.location.locationId !== id
@@ -87,13 +121,30 @@ export class LocationsService {
           );
         }
 
+        // Liberar al gerente anterior si es diferente.
+        if (
+          previousManager &&
+          previousManager.managerId !== manager.managerId
+        ) {
+          previousManager.location = null;
+          await this.managerRepository.save(previousManager);
+        }
+
+        // Guardar la relación desde el lado propietario.
         manager.location = location;
         await this.managerRepository.save(manager);
       }
     }
 
-    return await this.locationRepository.save(location);
+    // Volver a consultar la tienda para devolver la relación actualizada.
+    return await this.locationRepository.findOne({
+      where: { locationId: id },
+      relations: {
+        manager: true,
+      },
+    });
   }
+
 
   async remove(id: number) {
     const location = await this.findOne(id);

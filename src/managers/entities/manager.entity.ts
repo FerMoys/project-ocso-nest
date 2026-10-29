@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
-import type { Location } from "../../locations/entities/location.entity.js";
+import { Location } from "../../locations/entities/location.entity.js";
 import type { User } from "../../auth/entities/user.entity.js"; 
 import { ApiProperty } from "@nestjs/swagger";
+
 
 @Entity()
 export class Manager {
@@ -31,11 +32,13 @@ export class Manager {
     @Column('text')
     managerPhoneNumber: string;
 
-    @OneToOne('Location', (location: Location) => location.manager,   { nullable: true },)
-     @JoinColumn({
-        name: "locationId"
-    })
+    
+    @OneToOne(
+    () => Location,
+    (location) => location.manager,
+    )
     location: Location | null;
+
 
     @OneToOne('User', (user: User) => user.manager, { onDelete: 'CASCADE' }) // Opcional: onDelete según tus reglas de negocio
     @JoinColumn({
