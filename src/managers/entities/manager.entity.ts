@@ -37,7 +37,7 @@ export class Manager {
     () => Location,
     (location) => location.manager,
     )
-    location: Location | null;
+    location: Location | null | string;
 
 
     @OneToOne('User', (user: User) => user.manager, { onDelete: 'CASCADE' }) // Opcional: onDelete según tus reglas de negocio
