@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsInt, IsUUID, ValidateNested } from 'class-validator';
+import { IsString, IsNumber, IsInt, IsUUID, ValidateNested, IsObject, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class ProviderIdDto {
@@ -16,7 +16,7 @@ export class CreateProductDto {
   @IsInt()
   countSeal: number;
 
-  @ValidateNested()
-  @Type(() => ProviderIdDto)
-  provider: ProviderIdDto; 
+  @IsString()
+  @IsOptional()
+  provider: string
 }
