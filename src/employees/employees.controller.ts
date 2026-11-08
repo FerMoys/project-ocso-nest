@@ -9,12 +9,13 @@ import { ROLES } from '../auth/constants/roles.constants.js';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Employee } from './entities/employee.entity.js';
 import {ApiAuth} from '../auth/decorators/api.decorator.js'
+import { AwsService } from '../aws/aws.service.js';
 
 @ApiAuth()
 @ApiTags('Employees')
 @Controller('employees')
 export class EmployeesController {
-  constructor(private readonly employeesService: EmployeesService) {}
+  constructor(private readonly employeesService: EmployeesService, private readonly awsService: AwsService) {}
   @Auth(ROLES.MANAGER)
   @ApiResponse({
     status: 201,
@@ -51,13 +52,16 @@ export class EmployeesController {
   @Auth(ROLES.MANAGER, ROLES.EMPLOYEE)
    
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file', {
-    dest: "./src/employees/employees-photos"
-  }))
-  uploadPhoto(@UploadedFile() file: Express.Multer.File){
-    return "OK"
+ @Post(':id/upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadPhoto(@Param('id') id: string, @UploadedFile() file: Express.Multer.File){
+    const response = await this.awsService.uploadFile(file)
+    return this.employeesService.update(id, {
+      employeePhoto: response
+    })
+    //return this.awsService.uploadFile(file);
   }
+
   @Auth(ROLES.MANAGER)
   @Get()
   findAll() {

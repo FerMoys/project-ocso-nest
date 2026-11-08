@@ -1,0 +1,10 @@
+import { Module } from '@nestjs/common';
+import { AwsService } from './aws.service.js';
+
+//import * as AWS from "./aws.service.js;
+
+@Module({
+  providers: [AwsService],
+  exports: [AwsService]
+})
+export class AwsModule {}

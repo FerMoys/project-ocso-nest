@@ -40,7 +40,7 @@ export class CreateEmployeeDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  employeePhotoUrl?: string;
+  employeePhoto?: string;
 
   @ApiProperty()
   @IsOptional()

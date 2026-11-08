@@ -15,6 +15,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { JwtModule } from '@nestjs/jwt';
 import { JWT_KEY } from './auth/constants/jwt.constants.js';
 import { EXPIRES_IN } from './auth/constants/jwt.constants.js';
+import { AwsModule } from './aws/aws.module.js';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { EXPIRES_IN } from './auth/constants/jwt.constants.js';
     LocationsModule,
     RegionsModule,
     AuthModule,
+    AwsModule,
   ],
 })
 export class AppModule {}
