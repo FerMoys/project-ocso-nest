@@ -21,6 +21,7 @@ export class ManagersService {
     return this.managerRepository.find({
       relations: {
         location:true,
+        user:true
       }
     });
   }
@@ -31,6 +32,7 @@ export class ManagersService {
       where: {managerId: id},
       relations: {
         location:true,
+        user:true
       }
     });
     
