@@ -7,17 +7,57 @@ import { User } from './entities/user.entity.js';
 import * as bcrypt from 'bcrypt'; 
 import { JwtService } from '@nestjs/jwt'; 
 import { LoginUserDto } from './dto/login-user.dto.js';
+import { Employee } from '../employees/entities/employee.entity.js';
+import { Manager } from '../managers/entities/manager.entity.js';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Employee) private employeeRepository: Repository<Employee>,
+    @InjectRepository(Manager) private managerRepository: Repository<Manager>,
     private jwtService: JwtService
   ){}
 
-  registerUser(createUserDto: CreateUserDto){
-    createUserDto.userPassword = bcrypt.hashSync(createUserDto.userPassword, 5);
-    return this.userRepository.save(createUserDto);
+  async registerEmployee(id: string, createUserDto: CreateUserDto) {
+    createUserDto.userPassword = bcrypt.hashSync(
+      createUserDto.userPassword,
+      5
+    );
+
+    const user = await this.userRepository.save(createUserDto);
+
+    const employeeToUpdate = await this.employeeRepository.preload({
+      id: id,
+    });
+
+    if (!employeeToUpdate) {
+      throw new NotFoundException("Empleado no encontrado");
+    }
+
+    employeeToUpdate.user = user;
+
+    return await this.employeeRepository.save(employeeToUpdate);
+  }
+  async registerManager(id: string, createUserDto: CreateUserDto) {
+    createUserDto.userPassword = bcrypt.hashSync(
+      createUserDto.userPassword,
+      5
+    );
+
+    const user = await this.userRepository.save(createUserDto);
+
+    const managerToUpdate = await this.managerRepository.preload({
+      managerId: id,
+    });
+
+    if (!managerToUpdate) {
+      throw new NotFoundException("Empleado no encontrado");
+    }
+
+    managerToUpdate.user = user;
+
+    return await this.managerRepository.save(managerToUpdate);
   }
 
   async loginUser(loginUser: LoginUserDto){
