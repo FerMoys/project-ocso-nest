@@ -44,7 +44,7 @@ export class CreateEmployeeDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsObject()
-  location : LocationEmployeeDto;
+  @IsString()
+  location : LocationEmployeeDto | string;
 }
 

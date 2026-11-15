@@ -28,11 +28,15 @@ export class Employee {
   })
   employeePhoto: string;
 
-  @ManyToOne(()=> Location,(location) => location.employees)
-  @JoinColumn({
-    name:"locationId"
-  })
-  location:Location
+  @ManyToOne(
+    () => Location,
+    (location) => location.employees,
+    { nullable: true }
+)
+@JoinColumn({
+    name: "locationId"
+})
+location: Location;
   @OneToOne(() => User)
   @JoinColumn({
       name: "userId"

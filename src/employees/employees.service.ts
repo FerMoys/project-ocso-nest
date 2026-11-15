@@ -17,8 +17,12 @@ export class EmployeesService {
     return await this.employeeRepository.save(employee);
   }
 
-  async findAll() {
-    return await this.employeeRepository.find();
+  findAll() {
+    return this.employeeRepository.find({
+      relations:{
+        location:true
+      }
+    });
   }
 
   findByLocation(id:number){
@@ -30,7 +34,14 @@ export class EmployeesService {
   }
 
   async findOne(id: string) {
-    const employee = await this.employeeRepository.findOneBy({ id });
+    const employee = await this.employeeRepository.findOne({
+      where: {
+        id: id
+      },
+      relations: {
+        location: true,
+      } 
+    });
     if (!employee) {
       throw new NotFoundException(`Employee with id ${id} not found`);
     }
